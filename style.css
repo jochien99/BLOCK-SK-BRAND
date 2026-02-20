@@ -33,6 +33,7 @@ body {
     font-family: var(--font-sans);
     line-height: 1.6;
     height: 100vh;
+    overflow: hidden;
     display: flex;
 }
 
@@ -430,11 +431,7 @@ textarea:focus {
     margin: 0 auto 1rem auto;
 }
 
-@keyframes spin {
-    to {
-        transform: rotate(360deg);
-    }
-}
+
 
 /* Add styles for Markdown rendering inside console */
 .markdown-body {
@@ -512,58 +509,60 @@ textarea:focus {
     /* Hide the '>' prefix for markdown blocks */
 }
 
-/* ===== Mobile RWD Patch ===== */
-@media (max-width: 900px) {
-    body {
-        height: auto;
-        min-height: 100dvh;
-        /* iOS 新視窗高度 */
-        overflow: auto;
-        /* 手機必須允許捲動 */
-        display: block;
-        /* 不要用 flex 鎖住整頁 */
-        -webkit-overflow-scrolling: touch;
-    }
+/* ===== Mobile / Narrow-screen RWD Patch (v1) =====
+   Goal: when viewport is narrow (phone or resized desktop),
+   switch from left sidebar + 2-column grid to stacked layout.
+*/
+@media (max-width: 1100px) {
+  body {
+    height: auto !important;
+    min-height: 100dvh;
+    overflow: auto !important;       /* allow page scroll */
+    display: block !important;       /* stop locking layout with flex */
+    -webkit-overflow-scrolling: touch;
+  }
 
-    .app-container {
-        flex-direction: column;
-        /* sidebar 變成上方一段 */
-        height: auto;
-    }
+  .app-container {
+    flex-direction: column;
+    height: auto;
+  }
 
-    .sidebar {
-        width: 100%;
-        padding: 1rem;
-        border-right: none;
-        border-bottom: 1px solid var(--border-color);
-        box-shadow: none;
-        gap: 1rem;
-    }
+  .sidebar {
+    width: 100%;
+    padding: 1rem;
+    border-right: none;
+    border-bottom: 1px solid var(--border-color);
+    box-shadow: none;
+    gap: 1rem;
+    position: relative;
+  }
 
-    .main-content {
-        padding: 1rem;
-        overflow: visible;
-        /* 讓內容自然長高 */
-    }
+  .main-content {
+    padding: 1rem;
+    overflow: visible;  /* avoid nested scroll on iOS */
+  }
 
-    .layout-grid {
-        grid-template-columns: 1fr;
-        /* 兩欄改一欄 */
-        height: auto;
-    }
+  .layout-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    height: auto;
+  }
 
-    .panel-body {
-        overflow: visible;
-        /* 避免內層捲動在 iOS 卡住 */
-    }
+  .panel-body,
+  .console-area {
+    overflow: visible;  /* let the whole page scroll */
+  }
 
-    .action-buttons {
-        grid-template-columns: 1fr;
-        /* 按鈕改一欄 */
-    }
+  .action-buttons {
+    grid-template-columns: 1fr;
+  }
 
-    .btn-accent {
-        grid-column: span 1;
-        /* 原本 span 2，手機改回 1 */
-    }
+  .btn-accent {
+    grid-column: span 1;
+  }
+
+  /* Optional: prevent long words/URLs from breaking layout */
+  .log-line, pre, code {
+    word-break: break-word;
+  }
 }
