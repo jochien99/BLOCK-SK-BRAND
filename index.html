@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BLOCK-SK-BRAND-V1 | 品牌敘事骨架</title>
+    <link rel="stylesheet" href="style.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Noto+Sans+TC:wght@300;400;500;700&family=Fira+Code:wght@400;500&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- 引入 marked.js 處理 Markdown 轉 HTML -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Sidebar / Header Area -->
+        <aside class="sidebar">
+            <div class="brand-header">
+                <div class="system-tag">JO OS // 3.BLOCK_MOTHER</div>
+                <h1>BLOCK-SK-BRAND-V1</h1>
+                <p class="subtitle">品牌敘事骨架模板</p>
+                <div class="status-badges">
+                    <span class="badge"><i class="fas fa-check-circle"></i> V1.0 - AI ENGINE</span>
+                    <span class="badge warning" id="apiStatus"><i class="fas fa-bolt"></i> 需設定 API Key</span>
+                </div>
+            </div>
+
+            <div class="quote-box">
+                <i class="fas fa-quote-left"></i>
+                <p>品牌不是你說什麼，是他們怎麼說你。</p>
+            </div>
+
+            <div class="kpi-panel">
+                <h3><i class="fas fa-key"></i> 系統設定</h3>
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label for="apiKey">Google Gemini API Key</label>
+                    <input type="password" id="apiKey" placeholder="請輸入 API Key (不會儲存)">
+                    <p style="font-size: 0.7rem; color: var(--text-muted); margin-top: 5px; line-height: 1.4;">
+                        必需填寫。<a href="https://aistudio.google.com/app/apikey" target="_blank"
+                            style="color: var(--accent-cyan); text-decoration: none;">[取得免費 API Key]</a>
+                    </p>
+                </div>
+            </div>
+
+            <div class="kpi-panel">
+                <h3><i class="fas fa-chart-line"></i> 系統 KPI 監控</h3>
+                <ul>
+                    <li>AI 推論狀態 <span class="highlight-green" id="modelStatus">Standby</span></li>
+                    <li>語場一致性評估 <span class="highlight-green">≥ 90%</span></li>
+                    <li>轉化敘事回應率 <span class="highlight-green">≥ 75%</span></li>
+                </ul>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <div class="layout-grid">
+
+                <!-- Input Panel -->
+                <section class="panel input-panel">
+                    <header class="panel-header">
+                        <h2><i class="fas fa-sliders-h"></i> 語場原型生成器</h2>
+                        <button class="btn btn-secondary btn-sm" onclick="window.fillDemoData()"
+                            style="padding: 0.2rem 0.6rem; font-size: 0.75rem;">
+                            填入測試資料
+                        </button>
+                    </header>
+                    <div class="panel-body form-area">
+                        <div class="form-group">
+                            <label for="brandName">品牌名稱 (brand_name)</label>
+                            <input type="text" id="brandName" placeholder="例如：JOOS Tech">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="valSet">價值主張集合 (val_set.json - 簡述)</label>
+                            <textarea id="valSet" rows="4"
+                                placeholder="請描述品牌的信念定位、核心價值、你想解決什麼痛點... 例：我們致力於打造給工作狂的全自動化工作站，結合 AI 與極致的人體工學。"></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="ctxData">背景脈絡 (ctx.txt)</label>
+                            <textarea id="ctxData" rows="4"
+                                placeholder="目標受眾是誰？市場現況如何？品牌想要呈現什麼美學風格？例：目標對象是矽谷新創工程師，目前市面上的工具太過繁雜。我們想要呈現賽博龐克、高科技且有些叛逆的風格。"></textarea>
+                        </div>
+
+                        <div class="action-buttons">
+                            <button class="btn btn-primary" onclick="window.runInitBrandKit()">
+                                <i class="fas fa-box-open"></i> InitBrandKit()
+                            </button>
+                            <button class="btn btn-secondary" onclick="window.runApplyPositioning()">
+                                <i class="fas fa-crosshairs"></i> ApplyPositioning()
+                            </button>
+                            <button class="btn btn-secondary" onclick="window.runGenerateValueProps()">
+                                <i class="fas fa-gem"></i> GenerateValueProps()
+                            </button>
+                            <button class="btn btn-accent" onclick="window.runComposeNarrative()">
+                                <i class="fas fa-magic"></i> ComposeNarrative(AI 撰寫)
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Output Panel -->
+                <section class="panel output-panel">
+                    <header class="panel-header">
+                        <h2><i class="fas fa-terminal"></i> 輸出控制台 (Output)</h2>
+                        <div class="window-controls">
+                            <span class="dot red"></span>
+                            <span class="dot yellow"></span>
+                            <span class="dot green"></span>
+                        </div>
+                    </header>
+                    <div class="panel-body console-area" id="consoleOutput">
+                        <div class="log-line system">Waiting for execution...</div>
+                        <div class="log-line system">請先在左側輸入 Gemini API Key 以啟用 AI 生成功能。</div>
+                    </div>
+                </section>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- Modals or overlays if needed -->
+    <div id="processingOverlay" class="overlay hidden">
+        <div class="loader">
+            <div class="spinner"></div>
+            <p id="loadingMsg">AI Neural Link Establishing...</p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
